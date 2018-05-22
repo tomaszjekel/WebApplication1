@@ -1,0 +1,25 @@
+image: microsoft/dotnet:latest
+
+stages:
+  - test
+  - deploy
+
+before_script:
+  - "dotnet restore"
+
+release:
+  stage: deploy
+  only:
+    - master
+  artifacts:
+    paths:
+      - asp.net-core-mvc/bin/docker/WebApplication1.dll
+  script:
+    # The output path is relative to the position of the csproj-file
+    - dotnet publish WebApplication1 -c Release -o bin/Docker
+    
+debug:
+  stage: test
+  script:
+    - cd scripts
+    - sh dotnet-test.sh
